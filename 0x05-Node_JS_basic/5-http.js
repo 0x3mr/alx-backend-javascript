@@ -4,11 +4,6 @@ const fs = require('fs').promises;
 const PORT = 1245;
 const HOST = 'localhost';
 
-
-/**
- * Counts the students in a CSV data file.
- * @param {String} dataPath The path to the CSV data file.
- */
 const countStudents = async (dataPath) => {
   try {
     const stats = await fs.stat(dataPath);
@@ -23,15 +18,17 @@ const countStudents = async (dataPath) => {
     const studentPropNames = dbFieldNames.slice(0, dbFieldNames.length - 1);
 
     for (const line of fileLines.slice(1)) {
-      const studentRecord = line.split(',');
-      const studentPropValues = studentRecord.slice(0, studentRecord.length - 1);
-      const field = studentRecord[studentRecord.length - 1];
-      if (!Object.keys(studentGroups).includes(field)) {
-        studentGroups[field] = [];
+      if (line.trim() !== '') {
+        const studentRecord = line.split(',');
+        const studentPropValues = studentRecord.slice(0, studentRecord.length - 1);
+        const field = studentRecord[studentRecord.length - 1];
+        if (!Object.keys(studentGroups).includes(field)) {
+          studentGroups[field] = [];
+        }
+        const studentEntries = studentPropNames
+          .map((propName, idx) => [propName, studentPropValues[idx]]);
+        studentGroups[field].push(Object.fromEntries(studentEntries));
       }
-      const studentEntries = studentPropNames
-        .map((propName, idx) => [propName, studentPropValues[idx]]);
-      studentGroups[field].push(Object.fromEntries(studentEntries));
     }
 
     const totalStudents = Object
@@ -52,7 +49,8 @@ const app = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello Holberton School!');
   } else if (req.url === '/students') {
-    countStudents(process.argv[2])
+    const dataPath = process.argv[2];
+    countStudents(dataPath)
       .then((output) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
