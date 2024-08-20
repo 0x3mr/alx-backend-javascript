@@ -32,10 +32,10 @@ const countStudents = async (dataPath) => {
     const totalStudents = Object
       .values(studentGroups)
       .reduce((pre, cur) => (pre || []).length + cur.length);
-    return `Number of students: ${totalStudents}\n` + 
+    return `Number of students: ${totalStudents}\n${
       Object.entries(studentGroups)
-        .map(([field, group]) => `Number of students in ${field}: ${group.length}. List: ${group.map(student => student.firstname).join(', ')}`)
-        .join('\n');
+        .map(([field, group]) => `Number of students in ${field}: ${group.length}. List: ${group.map((student) => student.firstname).join(', ')}`)
+        .join('\n')}`;
   } catch (error) {
     throw new Error('Cannot load the database');
   }
@@ -51,7 +51,7 @@ const app = http.createServer((req, res) => {
       .then((output) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
-        res.end('This is the list of our students\n' + output);
+        res.end(`This is the list of our students\n${output}`);
       })
       .catch((err) => {
         res.statusCode = 500;
