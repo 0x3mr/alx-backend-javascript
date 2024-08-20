@@ -4,6 +4,10 @@ const fs = require('fs').promises;
 const PORT = 1245;
 const HOST = 'localhost';
 
+/**
+ * Counts the students in a CSV data file.
+ * @param {String} dataPath The path to the CSV data file.
+ */
 const countStudents = async (dataPath) => {
   try {
     const stats = await fs.stat(dataPath);
