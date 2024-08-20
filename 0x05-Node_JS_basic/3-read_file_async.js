@@ -33,6 +33,8 @@ const countStudents = async (dataPath) => {
       const studentNames = group.map((student) => student.firstname).join(', ');
       console.log(`Number of students in ${field}: ${group.length}. List: ${studentNames}`);
     }
+
+    return Promise.resolve();
   } catch (error) {
     return Promise.reject(new Error('Cannot load the database'));
   }
